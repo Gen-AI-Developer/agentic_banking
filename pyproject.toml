@@ -1,0 +1,19 @@
+[project]
+name = "agentic-banking"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Syed Safdar Ali Shah", email = "programmersafdar@live.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "openai-agents[litellm]>=0.0.13",
+]
+
+[project.scripts]
+agentic-banking = "agentic_banking:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
