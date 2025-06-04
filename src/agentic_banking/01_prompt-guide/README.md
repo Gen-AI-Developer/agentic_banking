@@ -1,6 +1,6 @@
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# create a detailed / comprehensive summary of the document provided don't miss anything that is important according to the document and or that is related to Open AI Prompt Engineering or Open AI Agent SDK, i except  the ouput in a way that everyone how will read this document will enjoy and happy to learn Prompting Guide
+# The GPT-4.1 Prompting Guide 
 
 The GPT-4.1 Prompting Guide is a comprehensive resource designed to help developers maximize the capabilities of the GPT-4.1 model family, particularly in the context of prompt engineering and building agentic workflows. This guide offers detailed best practices, examples, and strategic insights for effectively prompting GPT-4.1, especially when leveraging the OpenAI Agent SDK and related tools.
 
