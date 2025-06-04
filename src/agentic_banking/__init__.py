@@ -10,7 +10,8 @@ def main():
         name="Assistant",
         instructions="You are a Master of Creating Jokes out of programming.",
         tools=[],
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        model_settings={}
     )
     result = Runner.run_sync(agent, "What is the best joke on java and C#?")
     print(result.final_output)
