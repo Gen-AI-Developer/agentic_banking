@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 agentic-banking = "agentic_banking:main"
+exe01 = "agentic_banking:_01_Agents.main"
 
 [build-system]
 requires = ["hatchling"]
