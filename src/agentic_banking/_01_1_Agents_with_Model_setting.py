@@ -17,6 +17,7 @@ def main():
             frequency_penalty=0.5,  # Apply frequency penalty to reduce repetition
             # presence_penalty=0.5,  # Apply presence penalty to encourage new topics Gemini does not support presence_penalty
             # Note: Gemini does not support presence_penalty, so it is commented out
+            
         )
     )
     result = Runner.run_sync(agent, "what is Banking?")
