@@ -6,6 +6,10 @@ set_tracing_disabled(disabled=True)
 
 def main():
     print("Welcome to agentic-banking!")
+    """
+    This is a simple example of how to use the Agentic Banking framework.
+    It creates an agent that can answer questions about banking.
+    """
     agent = Agent(
         name="Banking Assistant",
         instructions="You are a helpfull assistant, who help in customer service and banking.",
