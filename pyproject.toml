@@ -18,6 +18,7 @@ exe02 = "agentic_banking:_01_1_Agents_with_Model_setting.main"
 exe03 = "agentic_banking:_01_2_Agents_with_Dynamic_instruction.main"
 exe04 = "agentic_banking:_02_Agent_handoff_with_Triage_agent.main"
 exe05 = "agentic_banking:_02_1_Agent_with_handoff_input.main"
+exe031= "agentic_banking:_03_Agent_with_Tool.main"
 exe099 = "agentic_banking:_03_1_1_Agent_with_Custom_function_tool.main"
 
 
