@@ -20,6 +20,7 @@ exe04 = "agentic_banking:_02_Agent_handoff_with_Triage_agent.main"
 exe05 = "agentic_banking:_02_1_Agent_with_handoff_input.main"
 exe031= "agentic_banking:_03_Agent_with_Tool.main"
 exe034 = "agentic_banking:_03_4_Agent_stop_at_specific_tool.main"
+exe035 = "agentic_banking:_03_5_Agent_tool_choice_in_model_setting.main"
 exe099 = "agentic_banking:_03_1_1_Agent_with_Custom_function_tool.main"
 
 
