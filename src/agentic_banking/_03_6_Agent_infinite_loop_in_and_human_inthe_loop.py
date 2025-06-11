@@ -33,7 +33,7 @@ def main():
         ),
         reset_tool_choice=False,
     )
-    result = Runner.run_sync(agent, "hello, i need to call human_in_the_loop with this text 'hello world'")
+    result = Runner.run_sync(agent, "hello, i need to call human_in_the_loop with this text 'hello world'",max_turns=3)
     print("Agent finished running.") 
     print(result.final_output)
     print("Goodbye from agentic-banking!")
