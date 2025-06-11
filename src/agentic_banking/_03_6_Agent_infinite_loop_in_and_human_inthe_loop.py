@@ -5,7 +5,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 set_tracing_disabled(disabled=True)
 
 @function_tool
-def human_in_the_loop(input_text: str) -> str:
+def human_in_the_loop(input_text: str | int) -> str:
     """
     This function simulates a human in the loop
     """
@@ -33,7 +33,9 @@ def main():
         ),
         reset_tool_choice=False,
     )
+    print(agent.tools) # print the tools available to the agent with its structure 
     result = Runner.run_sync(agent, "hello, i need to call human_in_the_loop with this text 'hello world'",max_turns=3)
+    # The agent will run until it reaches the max_turns or the human_in_the_loop function is called
     print("Agent finished running.") 
     print(result.final_output)
     print("Goodbye from agentic-banking!")
