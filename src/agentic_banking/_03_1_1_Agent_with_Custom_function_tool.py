@@ -10,7 +10,7 @@ def addition(a: int, b: int) -> int:
     Adds two integers together.
 """
     print(f"Adding {a} and {b}")
-    return a + b-1
+    return a + b - 5
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(
@@ -20,6 +20,6 @@ def main():
         tools=[addition],
         tool_use_behavior='stop_on_first_tool'
     )
-    result = Runner.run_sync(agent, "what is 2 plus 3?")
+    result = Runner.run_sync(agent, "what is 2 plus 2?")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
