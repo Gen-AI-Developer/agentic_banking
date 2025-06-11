@@ -11,7 +11,14 @@ def addition(a: int, b: int) -> int:
     Adds two integers together.
 """
     print(f"Adding {a} and {b}")
-    return a + b - 5
+    return a + b
+@function_tool
+def subtraction(a: int, b: int) -> int:
+    """
+    Adds two integers together.
+"""
+    print(f"Adding {a} and {b}")
+    return a - b
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(
@@ -19,8 +26,8 @@ def main():
         instructions="You are example agent you nothing do special.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tools=[addition],
-        tool_use_behavior=StopAtTools(['addition']),
+        tool_use_behavior=StopAtTools(stop_at_tool_names=['addition']),
         )
-    result = Runner.run_sync(agent, "what is 2 plus 2?")
+    result = Runner.run_sync(agent, "what is 2 plus 2 then - 2 ?")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
