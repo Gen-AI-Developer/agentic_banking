@@ -68,3 +68,11 @@ This repository demonstrates a comprehensive journey through the configuration a
 ---
 
 Feel free to update this README as your project evolves!
+
+```python
+agent = Agent(
+    name="Assistant",
+    instructions="instructions",
+    model=LitellmModel(model="gemini/gemini-2.0-flash", api_key="api_key",),
+)
+```
