@@ -27,6 +27,7 @@ def main():
         name="Banking Assistant",
         instructions="You are a helpfull assistant, who help in customer service and banking.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        handoffs=[handoff_obj],
     )
     result = Runner.run_sync(agent, "what is Banking?")
     print(result.final_output)
