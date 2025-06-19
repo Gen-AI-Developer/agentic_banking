@@ -24,7 +24,7 @@ exe034 = "agentic_banking:_03_4_Agent_stop_at_specific_tool.main"
 exe035 = "agentic_banking:_03_5_Agent_tool_choice_in_model_setting.main"
 exe036 = "agentic_banking:_03_6_Agent_infinite_loop_in_and_human_inthe_loop.main"
 exe099 = "agentic_banking:_03_1_1_Agent_with_Custom_function_tool.main"
-
+agentrunhook = "agentic_banking:_10_3_Agent_with_Lifecycle_agent_run_hooks.main"
 
 
 
