@@ -9,22 +9,22 @@ class MyCustomAgentHook(AgentHooks):
     Custom agent hook to log the start and end of an agent run.
     This hook can be used to perform actions before and after the agent run.
     """
-    def on_start(self, context: RunContextWrapper[None]) -> None:
-        print(f"Agent {context.agent.name} is starting its run.")
+    def on_start(self, context: RunContextWrapper[None],agent) -> None:
+        print(f"Agent {agent.name} is starting its run.")
 
-    def on_end(self, context: RunContextWrapper[None]) -> None:
-        print(f"Agent {context.agent.name} has completed its run with output: {context.result.final_output}")
+    def on_end(self, context: RunContextWrapper[None],agent) -> None:
+        print(f"Agent {agent.name} has completed its run with output: {context.result.final_output}")
 
 class MyCustomRunHook(RunHooks):
     """
     Custom run hook to log the start and end of a run.
     This hook can be used to perform actions before and after the run.
     """
-    def on_agent_start(self, context: RunContextWrapper[None],Agent) -> None:
-        print(f"Run is started with agent: {context.agent.name}")
+    def on_agent_start(self, context: RunContextWrapper[None],agent) -> None:
+        print(f"Run is started with agent: {agent.name}")
 
-    def on_agent_end(self, context: RunContextWrapper[None],Agent) -> None:
-        print(f"Run has completed with agent: {context.agent.name} ")
+    def on_agent_end(self, context: RunContextWrapper[None],agent) -> None:
+        print(f"Run has completed with agent: {agent.name} ")
 
 def main():
     print("Welcome to AI Assistant with Lifecycle (Agent-Run) Hooks!")
