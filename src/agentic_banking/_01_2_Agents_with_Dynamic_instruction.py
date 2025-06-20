@@ -12,7 +12,8 @@ class UserInfo(BaseModel):
     userBalance:float
 
 def get_dynamic_instruction(context: RunContextWrapper[UserInfo], agent: Agent[UserInfo]) -> str:
-    return f"Welcome {context.context.userName},your account No. {context.context.userAccountNo} your account type is {context.context.userAccountType} and your balance is {context.context.userBalance}. You can ask me about your account details or any banking related queries."
+    "your account No. {context.context.userAccountNo} your account type is {context.context.userAccountType} and your balance is {context.context.userBalance}. You can ask me about your account details or any banking related queries."
+    return f"Welcome {context.context.userName},"
 def main():
     userinfo = UserInfo(
         userName="Safdar Ali Shah",
