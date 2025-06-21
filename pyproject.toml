@@ -27,6 +27,11 @@ exe099 = "agentic_banking:_03_1_1_Agent_with_Custom_function_tool.main"
 agentrunhook = "agentic_banking:_10_3_Agent_with_Lifecycle_agent_run_hooks.main"
 agenthooks = "agentic_banking:_10_2_Agent_with_Lifecycle_agent_hooks.main"
 runhooks = "agentic_banking:_10_1_Agent_with_Lifecycle_run_hooks.main"
+agentlifecycle = "agentic_banking:_10_Agent_with_Lifecycle.main"
+cloneagent = "agentic_banking:_11_Agent_Cloning_copying_agents.main"
+
+
+
 
 
 [build-system]
