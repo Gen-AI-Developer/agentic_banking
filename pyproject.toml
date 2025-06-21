@@ -13,7 +13,7 @@ dependencies = [
 
 [project.scripts]
 agentic-banking = "agentic_banking:main"
-exe01 = "agentic_banking:_01_Agents.main"
+agent1 = "agentic_banking:_01_Agents.main"
 exe02 = "agentic_banking:_01_1_Agents_with_Model_setting.main"
 exe03 = "agentic_banking:_01_2_Agents_with_Dynamic_instruction.main"
 exe04 = "agentic_banking:_02_Agent_handoff_with_Triage_agent.main"
