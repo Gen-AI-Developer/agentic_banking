@@ -11,7 +11,7 @@ def main():
         instructions="You are a helpfull assistant, who help in customer service and banking. Your Response should be short and concise with in 100 token limit.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         model_settings=ModelSettings(
-            tool_choice="auto", # Automatically choose the best tool for the task
+            tool_choice="required", # Automatically choose the best tool for the task
             temperature=0.2,  # Lower temperature for more deterministic responses
             max_tokens=100,  # Increase max tokens for longer responses
             top_p=0.9,  # Use top-p sampling for more diverse outputs
