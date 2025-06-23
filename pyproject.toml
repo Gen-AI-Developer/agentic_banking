@@ -8,7 +8,9 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "agentops>=0.4.16",
     "openai-agents[litellm]>=0.0.13",
+    "python-dotenv>=1.1.0",
 ]
 
 [project.scripts]
@@ -31,6 +33,7 @@ agentlifecycle = "agentic_banking:_10_Agent_with_Lifecycle.main"
 cloneagent = "agentic_banking:_11_Agent_Cloning_copying_agents.main"
 14 = "agentic_banking:_14_Agent_Result_to_input_list"
 041 = "agentic_banking:_04_1_Agents_with_Runner_run.main"
+tracing = "agentic_banking:_13_Agent_tracing.main"
 
 
 
