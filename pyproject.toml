@@ -34,6 +34,7 @@ cloneagent = "agentic_banking:_11_Agent_Cloning_copying_agents.main"
 14 = "agentic_banking:_14_Agent_Result_to_input_list"
 041 = "agentic_banking:_04_1_Agents_with_Runner_run.main"
 tracing = "agentic_banking:_13_Agent_tracing.main"
+313 = "agentic_banking:_03_1_3_Agent_with_Custom_function_tool_Pydantic_return.main"
 
 
 
