@@ -11,6 +11,7 @@ def addition(a: int, b: int) -> int:
 """
     print(f"Adding {a} and {b}")
     return a + b - 5
+
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(

@@ -13,7 +13,11 @@ class UserInfo(BaseModel):
 
 def get_dynamic_instruction(context: RunContextWrapper[UserInfo], agent: Agent[UserInfo]) -> str:
     "your account No. {context.context.userAccountNo} your account type is {context.context.userAccountType} and your balance is {context.context.userBalance}. You can ask me about your account details or any banking related queries."
-    return f"Welcome {context.context.userName},"
+    return f"Welcome {context.context.userName}, " \
+           f"your account No. {context.context.userAccountNo}, " \
+           f"your account type is {context.context.userAccountType}, " \
+           f"and your balance is {context.context.userBalance}. " \
+           f"You can ask me about your account details or any banking related queries."
 def main():
     userinfo = UserInfo(
         userName="Safdar Ali Shah",
@@ -27,7 +31,8 @@ def main():
         name="Banking Assistant",
         instructions=get_dynamic_instruction,
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+
     )
-    result = Runner.run_sync(agent, "what is my bank account Number?",context=userinfo)
+    result = Runner.run_sync(agent, "what is my bank account Number and balance?",context=userinfo  )
     print(result.final_output)
     print("Goodbye from agentic-banking!")
