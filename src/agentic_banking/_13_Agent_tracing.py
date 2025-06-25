@@ -62,6 +62,10 @@ async def main():
         print("Goodbye from ai!")
         print("Trace ID:", main_trace.trace_id)
         print("Trace Exported:", main_trace.export())
-
+    local_tracing_processor.shutdown()
+    local_tracing_processor.force_flush()
+    print("Tracing processor shutdown and flushed.")
+    print("All traces and spans have been exported.")
+    print("Goodbye from agentic-banking!")
 if __name__ == "__main__":
     asyncio.run(main())
