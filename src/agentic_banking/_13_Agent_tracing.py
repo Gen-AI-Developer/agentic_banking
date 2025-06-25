@@ -8,7 +8,6 @@ set_tracing_disabled(disabled=True)
 agents_ops_api_key = os.getenv("AGENT_OPS_API_KEY")
 
 
-# agentops.monitor()
 async def main():
     print("Welcome to AI")
     agent = Agent(
