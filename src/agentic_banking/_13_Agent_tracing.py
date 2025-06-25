@@ -18,20 +18,30 @@ class CustomTracingProcessor(TracingProcessor):
         return f"CustomTracingProcessor(name={self.name})"
 
     def on_trace_start(self, trace):
-        print(f"Trace started: {trace} with id {trace.id} and name {trace.name}")
+        print(f"Trace started: {trace} with id {trace.trace_id} and name {trace.name}")
         self.traces.append(trace)
 
     def on_trace_end(self, trace):
+        print(f"Trace ended: {trace} with id {trace.trace_id} and name {trace.name}")
+        print(f"Trace Exported: {trace.export()}")
         print(f"Trace ended: {trace}")
 
     def on_span_start(self, span):
-        print(f"Span started: {span}")
+        print(f"Span started: {span} with id {span.span_id}")
+        self.spans.append(span)
+        print(f"Span Exported: {span.export()}")
 
     def on_span_end(self, span):
         print(f"Span ended: {span}")
+        print(f"Span Exported: {span.export()}")
+        print(f"Span ended: {span} with id {span.span_id}")
 
     def shutdown(self):
-        print("Shutting down tracing processor")
+        print("===Shutting down tracing processor===")
+        for trace in self.traces:
+            print(f"Export trace: {trace.export()}")
+        for span in self.spans:
+            print(f"Export span: {span.export()}")
 
     def force_flush(self):
         print("Forcing flush of spans/traces")
