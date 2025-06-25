@@ -2,13 +2,10 @@ from agents import Agent, Runner, function_tool, set_tracing_disabled
 from openai.types.responses import ResponseTextDeltaEvent
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-import agentops
 import asyncio
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
-agents_ops_api_key = os.getenv("AGENT_OPS_API_KEY")
 
-agentops.init(api_key=agents_ops_api_key)
 # agentops.monitor()
 async def main():
     print("Welcome to AI")
