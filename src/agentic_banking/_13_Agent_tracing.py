@@ -1,4 +1,4 @@
-from agents import Agent, Runner, function_tool, set_tracing_disabled
+from agents import Agent, Runner, function_tool, set_tracing_disabled, set_trace_processors, trace
 from openai.types.responses import ResponseTextDeltaEvent
 from agents.extensions.models.litellm_model import LitellmModel
 from agents.tracing.processor_interface import TracingProcessor
@@ -46,6 +46,9 @@ class CustomTracingProcessor(TracingProcessor):
     def force_flush(self):
         print("Forcing flush of spans/traces")
 
+local_tracing_processor = CustomTracingProcessor()
+set_trace_processors([local_tracing_processor])
+
 async def main():
     print("Welcome to AI")
     agent = Agent(
@@ -53,13 +56,12 @@ async def main():
         instructions="You are a helpfull assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     )
-    result = Runner.run_streamed(agent, "what is today date?")
-    async for event in result.stream_events:
-        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
-            print(event.raw_response, end="", flush=True)
-        pass
-
-    print("Goodbye from ai!")
+    with trace("main_trace") as main_trace:
+        result = await Runner.run(agent, "what is LLM in AI?")
+        print("Final Output:", result.final_output)
+        print("Goodbye from ai!")
+        print("Trace ID:", main_trace.trace_id)
+        print("Trace Exported:", main_trace.export())
 
 if __name__ == "__main__":
     asyncio.run(main())
