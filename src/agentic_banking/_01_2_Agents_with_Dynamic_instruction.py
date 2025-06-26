@@ -33,6 +33,6 @@ def main():
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
 
     )
-    result = Runner.run_sync(agent, "what is my bank account Number and balance?",context=userinfo  )
+    result = Runner.run_sync(agent, "what is my bank account Number and balance?",context=userinfo, max_turns=3  )
     print(result.final_output)
     print("Goodbye from agentic-banking!")

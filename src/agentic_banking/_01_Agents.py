@@ -50,7 +50,7 @@ def main():
         tool_use_behavior="run_llm_again",
         hooks=MyCustomAgentHooks(),
         )
-
+    print(agent.tools)
     # ai_expert_agent : Agent = Agent(
     #     name="ai Assistant",
     #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
