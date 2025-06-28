@@ -27,10 +27,12 @@ class MyCustomAgentHooks(AgentHooks):
         print(f"AH:-> Agent {agent.name} has completed")
     
     async def on_tool_start(self, context, agent, tool):
+        if (tool.name == "biology_exper"):
+            print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
         return await super().on_tool_start(context, agent, tool)
     
     async def on_tool_end(self, context, agent, tool, result):
-        print(f"AH:-> Tool {tool.name} has completed with result: {result}")
+        print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
         return await super().on_tool_end(context, agent, tool, result)
 
 @function_tool
@@ -50,6 +52,7 @@ def main():
         tool_use_behavior="run_llm_again",
         hooks=MyCustomAgentHooks(),
         )
+    print("-------------------")
     print(agent.tools)
     print(agent.name)
     print(agent.instructions)
@@ -59,7 +62,7 @@ def main():
     print(agent.handoff_description)
     print(agent.get_all_tools())
     print("-------------------")
-    print(agent.get_system_prompt())
+    # print(agent.get_system_prompt())
     # ai_expert_agent : Agent = Agent(
     #     name="ai Assistant",
     #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
