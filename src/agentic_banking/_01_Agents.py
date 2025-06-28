@@ -51,6 +51,15 @@ def main():
         hooks=MyCustomAgentHooks(),
         )
     print(agent.tools)
+    print(agent.name)
+    print(agent.instructions)
+    print(agent.model)
+    print(agent.hooks)
+    print(agent.tool_use_behavior)
+    print(agent.handoff_description)
+    print(agent.get_all_tools())
+    print("-------------------")
+    print(agent.get_system_prompt())
     # ai_expert_agent : Agent = Agent(
     #     name="ai Assistant",
     #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
