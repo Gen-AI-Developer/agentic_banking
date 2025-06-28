@@ -38,8 +38,7 @@ trace2 = "agentic_banking:_13_4_Agent_tracing_repo.main"
 313 = "agentic_banking:_03_1_3_Agent_with_Custom_function_tool_Pydantic_return.main"
 09 = "agentic_banking:_09_Agents_with_Structure_output.main"
 091 = "agentic_banking:_09_1_Agents_with_Tool_Structure_output.main"
-
-
+06 = "agentic_banking:_06_Agents_with_llm_Context.main"
 
 [build-system]
 requires = ["hatchling"]
