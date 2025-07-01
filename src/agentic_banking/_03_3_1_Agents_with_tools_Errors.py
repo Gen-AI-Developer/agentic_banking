@@ -1,6 +1,8 @@
 from agents import Agent, RunContextWrapper, Runner, function_tool, set_tracing_disabled, ModelSettings
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+import pprint
+from dataclasses import asdict
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -33,4 +35,18 @@ def main():
     )
     result = Runner.run_sync(agent, "no data")
     print(result.final_output)
+    print("----------------------------")
+    print("-----final_output:----")
+    print(result.final_output)
+    print("----------------------------")
+    print("-----result:----")
+    print(result)
+    print("----------------------------")
+    print("-----raw_responses:----")
+    print(result.raw_responses)
+    print("----------------------------")
+    print("-----result as dict:----")
+    pprint.pprint(asdict(result))
+    # print(result.tool_calls)
+    print("----------------------------")
     print("Goodbye from Assistant!")
