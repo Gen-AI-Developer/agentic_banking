@@ -42,6 +42,8 @@ trace2 = "agentic_banking:_13_4_Agent_tracing_repo.main"
 023 = "agentic_banking:_02_3_Agent_with_handoff_input_with_OpenAIClient.main"
 toolerror = "agentic_banking:_03_3_1_Agents_with_tools_Errors.main"
 ag = "agentic_banking:_07_Agents_with_Guardrails.main"
+inputg = "agentic_banking:_07_1_Agents_with_input_Guardrails.main"
+outputg = "agentic_banking:_07_2_Agents_with_ouput_Guardrails.main"
 
 [build-system]
 requires = ["hatchling"]
