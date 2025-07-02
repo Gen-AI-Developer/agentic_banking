@@ -1,7 +1,13 @@
 from agents import Agent, Runner, set_tracing_disabled, RunContextWrapper
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+from dataclasses import asdict
+
+
+# from rich import print
 from pydantic import BaseModel
+
+from agentic_banking import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 MODEL=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,)
@@ -67,8 +73,35 @@ def main():
         name="Triage Agent",
         instructions="Your are a Triage Agent, who triage the customer request and handoff to the appropriate agent based on the user's needs.",
         model=MODEL,
-        handoffs=[CustomerServiceAgent, InterestFinderAgent],
+        # handoffs=[CustomerServiceAgent, InterestFinderAgent],
     )
+
+
+    # def print_tree(data, prefix=""):
+    #     if isinstance(data, dict):
+    #         for i, (key, value) in enumerate(data.items()):
+    #             is_last = i == len(data) - 1
+    #             connector = "└── " if is_last else "├── "
+    #             print(f"{prefix}{connector}{key}:", end="")
+    #             if isinstance(value, (dict, list)):
+    #                 print()
+    #                 new_prefix = prefix + ("    " if is_last else "│   ")
+    #                 print_tree(value, new_prefix)
+    #             else:
+    #                 print(f" {value}")
+    #     elif isinstance(data, list):
+    #         for i, item in enumerate(data):
+    #             is_last = i == len(data) - 1
+    #             connector = "└── " if is_last else "├── "
+    #             print(f"{prefix}{connector}Item {i}")
+    #             new_prefix = prefix + ("    " if is_last else "│   ")
+    #             print_tree(item, new_prefix)
+    #     else:
+    #         print(f"{prefix}{data}")
+
+    TriageAgent.handoffs.append(CustomerServiceAgent)
+    TriageAgent.handoffs.append(InterestFinderAgent)
     result = Runner.run_sync(TriageAgent, "I have a question about my bank account, my question is: Calculate the APRI on my savings in my account, if the Interest rate is 3.2 percent?",context=userinfo)
     print(result.final_output)
+    printt(asdict(result))
     print("Goodbye from agentic-banking!")
