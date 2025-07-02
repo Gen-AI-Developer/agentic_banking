@@ -13,7 +13,7 @@ def colorize(value):
     else:
         return str(value)
 
-def print_tree(data, prefix=""):
+def printt(data, prefix=""):
     if isinstance(data, dict):
         items = list(data.items())
         for i, (key, value) in enumerate(items):
@@ -23,7 +23,7 @@ def print_tree(data, prefix=""):
             if isinstance(value, (dict, list)):
                 print()
                 new_prefix = prefix + ("    " if is_last else "│   ")
-                print_tree(value, new_prefix)
+                printt(value, new_prefix)
             else:
                 print(f" {colorize(value)}")
     elif isinstance(data, list):
@@ -32,6 +32,6 @@ def print_tree(data, prefix=""):
             connector = "└── " if is_last else "├── "
             print(f"{prefix}{connector}{Fore.CYAN}Item {i}{Style.RESET_ALL}")
             new_prefix = prefix + ("    " if is_last else "│   ")
-            print_tree(item, new_prefix)
+            printt(item, new_prefix)
     else:
         print(f"{prefix}{colorize(data)}")

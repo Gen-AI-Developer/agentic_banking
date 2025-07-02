@@ -7,7 +7,8 @@ from dataclasses import asdict
 # from rich import print
 from pydantic import BaseModel
 
-from agentic_banking import printt
+# from agentic_banking import printt
+from agentic_banking.printt import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 MODEL=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,)
@@ -104,4 +105,5 @@ def main():
     result = Runner.run_sync(TriageAgent, "I have a question about my bank account, my question is: Calculate the APRI on my savings in my account, if the Interest rate is 3.2 percent?",context=userinfo)
     print(result.final_output)
     printt(asdict(result))
+    # print_tree(asdict(result))
     print("Goodbye from agentic-banking!")
