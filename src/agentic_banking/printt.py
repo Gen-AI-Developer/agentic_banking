@@ -1,3 +1,4 @@
+from pprint import pprint
 from colorama import Fore, Style, init
 from dataclasses import asdict
 init(autoreset=True)
@@ -37,3 +38,12 @@ def printt(data, prefix=""):
             printt(item, new_prefix)
     else:
         print(f"{prefix}{colorize(data)}")
+
+def pprintt(data):
+    """
+    Pretty print a data structure with colorized output.
+    
+    Args:
+        data: The data structure to print (can be dict, list, or any other type).
+    """
+    return pprint(data)

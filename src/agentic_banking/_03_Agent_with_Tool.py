@@ -3,6 +3,7 @@ from agents.extensions.models.litellm_model import LitellmModel
 import os
 # from dataclasses import asdict
 from agentic_banking.printt import printt
+from agentic_banking.printt import pprint
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -25,4 +26,5 @@ def main():
     result = Runner.run_sync(agent, "what is 2 plus 2?")
     # print(result.final_output)
     printt(result)
+    pprint(result)
     print("Goodbye from agentic-banking!")
