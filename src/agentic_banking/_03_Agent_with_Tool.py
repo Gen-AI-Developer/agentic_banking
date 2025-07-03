@@ -1,6 +1,8 @@
 from agents import Agent, Runner, function_tool, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+# from dataclasses import asdict
+from agentic_banking.printt import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -21,5 +23,6 @@ def main():
         tool_use_behavior='run_llm_again'
     )
     result = Runner.run_sync(agent, "what is 2 plus 2?")
-    print(result.final_output)
+    # print(result.final_output)
+    printt(result)
     print("Goodbye from agentic-banking!")
