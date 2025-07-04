@@ -1,7 +1,7 @@
 from agents import Agent, Runner, function_tool, set_tracing_disabled,enable_verbose_stdout_logging
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-from agents import StopAtTools
+from agents.agent import StopAtTools
 # from dataclasses import asdict
 from agentic_banking.printt import printt
 from agentic_banking.printt import pprint
@@ -33,8 +33,8 @@ def addition(a: int, b: int) -> int:
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(
-        name=True,
-        instructions=12345678920,
+        name=main.__name__,
+        instructions=main(),
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tools=[addition,],
         tool_use_behavior=StopAtTools(Stop_at_tools_names=["get_weather"]),
