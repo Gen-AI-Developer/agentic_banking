@@ -1,7 +1,8 @@
-from dataclasses import asdict
+# from dataclasses import asdict
 from agents import Agent, Runner, function_tool, set_tracing_disabled,enable_verbose_stdout_logging
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+from attr  import asdict
 from agents.agent import StopAtTools
 # from dataclasses import asdict
 from agentic_banking.printt import printt
