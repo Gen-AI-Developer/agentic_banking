@@ -14,6 +14,7 @@ def main():
     )
     sport_agent = Agent(        
         name="Sport Assistant",
+        
         model=MODEL,
     )
     triage_agent = Agent(
