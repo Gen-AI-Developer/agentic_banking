@@ -1,4 +1,5 @@
-from agents import Agent, Handoff, Runner, function_tool, set_tracing_disabled, handoff
+from agents import Agent, Handoff, Runner, function_tool, set_tracing_disabled
+from agents import handoff,handoffs
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 api_key = os.getenv("GEMINI_API_KEY")  
@@ -23,13 +24,14 @@ def main():
                 agent = banking_agent,
                 tool_name_override="BankingAssistant",
                 tool_description_override="Provides assistance with banking-related queries.",
-                is_enabled=True
+                # is_enabled=True
+                # input_filter=lambda input: "banking" in input.lower() or "finance" in input.lower()
             ),
             handoff(
                 agent = sport_agent,
                 tool_name_override="SportAssistant",
                 tool_description_override="Provides assistance with sports-related queries.",
-                is_enabled=True
+                # is_enabled=True
             )
         ]
     )
