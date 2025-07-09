@@ -6,11 +6,10 @@ set_tracing_disabled(disabled=True)
 
 def main():
     print("Welcome to agentic-banking!")
-    agent = Agent(
-        name="Banking Assistant",
-        instructions="You are a helpfull assistant, who help in customer service and banking.",
+    triage_agent = Agent(
+        name="Triage Assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     )
-    result = Runner.run_sync(agent, "what is Banking?")
+    result = Runner.run_sync(triage_agent, "what is Banking?")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
