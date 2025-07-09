@@ -1,4 +1,4 @@
-from agents import Agent, Runner, function_tool, set_tracing_disabled
+from agents import Agent, Runner, function_tool, set_tracing_disabled, handoff
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 api_key = os.getenv("GEMINI_API_KEY")  
@@ -18,6 +18,20 @@ def main():
     triage_agent = Agent(
         name="Triage Assistant",
         model=MODEL,
+        handoffs=[
+            handoff(
+                agent = banking_agent,
+                tool_name_override="BankingAssistant",
+                tool_description_override="Provides assistance with banking-related queries.",
+                is_enabled=True
+            ),
+            handoff(
+                agent = sport_agent,
+                tool_name_override="SportAssistant",
+                tool_description_override="Provides assistance with sports-related queries.",
+                is_enabled=True
+            )
+        ]
     )
     result = Runner.run_sync(triage_agent, "what is Banking?")
     print(result.final_output)
