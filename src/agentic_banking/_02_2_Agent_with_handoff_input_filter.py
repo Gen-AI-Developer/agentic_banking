@@ -7,9 +7,17 @@ MODEL=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key)
 
 def main():
     print("Welcome to agentic-banking!")
+    banking_agent = Agent(
+        name="Banking Assistant",
+        model=MODEL,
+    )
+    sport_agent = Agent(        
+        name="Sport Assistant",
+        model=MODEL,
+    )
     triage_agent = Agent(
         name="Triage Assistant",
-        
+        model=MODEL,
     )
     result = Runner.run_sync(triage_agent, "what is Banking?")
     print(result.final_output)
