@@ -1,4 +1,4 @@
-from agents import Agent, Runner, set_tracing_disabled, RunContextWrapper
+from agents import Agent, Runner, set_tracing_disabled, RunContextWrapper,handoff
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 from dataclasses import asdict
@@ -69,6 +69,7 @@ def main():
         name="Banking Interest Finder Assistant",
         instructions=get_dynamic_instruction,
         model=MODEL,
+
     )
     TriageAgent = Agent[UserInfo](
         name="Triage Agent",
@@ -101,7 +102,7 @@ def main():
     #         print(f"{prefix}{data}")
 
     TriageAgent.handoffs.append(CustomerServiceAgent)
-    TriageAgent.handoffs.append(InterestFinderAgent)
+    TriageAgent.handoffs.append(handoff(agent=InterestFinderAgent, tool_name_override="IntresetCalculator", tool_description_override="Calculate the Interest on Savings based on the provided Interest Rate.",is_enabled=True)) 
     result = Runner.run_sync(TriageAgent, "I have a question about my bank account, my question is: Calculate the APRI on my savings in my account, if the Interest rate is 3.2 percent?",context=userinfo)
     print(result.final_output)
     printt(asdict(result))
