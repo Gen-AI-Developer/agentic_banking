@@ -2,13 +2,20 @@ from agents import Agent, Handoff, Runner, function_tool, set_tracing_disabled
 from agents import handoff,handoffs, RunContextWrapper
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+
+from pydantic import BaseModel
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 MODEL=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key)
-def summary_of_provided_context(context: RunContextWrapper[any], agent:Agent):
+
+class UserLoginInfo(BaseModel):
+    isUserLoggedin : bool = False
+
+def summary_of_provided_context(context: RunContextWrapper[UserLoginInfo], agent:Agent):
     return f"This is context provided by is_enabled {context.context} with agent.name: {agent.name}"
     pass
 def main():
+    currentUser = UserLoginInfo(isUserLoggedin=True)
     print("Welcome to agentic-banking!")
     banking_agent = Agent(
         name="Banking Assistant",
@@ -38,6 +45,6 @@ def main():
             )
         ]
     )
-    result = Runner.run_sync(triage_agent, "what is Banking?")
+    result = Runner.run_sync(triage_agent, "what is Banking?",context=currentUser)
     print(result.final_output)
     print("Goodbye from agentic-banking!")
