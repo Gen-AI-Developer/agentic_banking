@@ -19,13 +19,14 @@ class CustomRunner(Runner):
         result = await super().run(agent_name,input,**kwargs)
         return result
 
-def main():
+async def main():
     print("================================")
     agent = Agent(
         name="Assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=gemini_api_key),
     )
-    result = CustomRunner.run(agent_name=agent, input="Hi")
+    runner = CustomRunner()
+    result = await runner.run(agent_name=agent, input="Hi")
     print(result.final_output)
     print("================================")
 
