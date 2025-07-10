@@ -14,7 +14,7 @@ else:
 set_tracing_disabled(disabled=True)
 
 class CustomRunner(Runner):
-    async def run(agent_name,input,**kwargs):
+    async def run(self,agent_name,input,**kwargs):
         print("===CustomRunner===")
         result = await super().run(agent_name,input,**kwargs)
         return result
