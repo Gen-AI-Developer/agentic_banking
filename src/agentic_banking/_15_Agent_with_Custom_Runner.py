@@ -1,8 +1,10 @@
+import asyncio
 from agents import Agent, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 from agents import Agent, handoff, RunContextWrapper
 from pydantic import BaseModel
+from agents.run import Runner
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")  
 if gemini_api_key:
@@ -11,7 +13,11 @@ else:
     print("GEMINI_API_KEY is not set. Please set it in your environment variables.")
 set_tracing_disabled(disabled=True)
 
-
+class CustomRunner(Runner):
+    async def run(agent_name,input,**kwargs):
+        print("===CustomRunner===")
+        result = await super().run(agent_name,input,**kwargs)
+        return result
 
 def main():
     print("================================")
@@ -19,6 +25,10 @@ def main():
         name="Assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=gemini_api_key),
     )
-    result = Runner.run_sync(agent, "Hi")
+    result = CustomRunner.run(agent_name=agent, input="Hi")
     print(result.final_output)
     print("================================")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

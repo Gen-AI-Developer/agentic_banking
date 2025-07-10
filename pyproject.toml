@@ -46,6 +46,11 @@ ag = "agentic_banking:_07_Agents_with_Guardrails.main"
 inputg = "agentic_banking:_07_1_Agents_with_input_Guardrails.main"
 outputg = "agentic_banking:_07_2_Agents_with_ouput_Guardrails.main"
 streaming = "agentic_banking:_04_3_Agents_with_Runner_streaming.main"
+cr = "agentic_banking:_15_Agent_with_Custom_Runner.main"
+
+
+
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
