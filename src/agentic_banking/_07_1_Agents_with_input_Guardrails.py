@@ -13,25 +13,25 @@ class BankingQuestion(BaseModel):
 
 guardrail_agent = Agent(
     name="Input Guardrail Agent",
-    instructions="You are a Input guardrail agent that checks for whether the query or input question is related to Banking / finance **if yes return Negative** and  **if no return positive**",
+    instructions="You are a Input guardrail agent that checks for whether the query or input question is related to Banking / finance",
     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     output_type=BankingQuestion,
 )
 
 @input_guardrail
-async def banking_guardrails(context: RunContextWrapper[None], agent: Agent,input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
+async def banking_guardrails(context: RunContextWrapper[None], agent: Agent, input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
     """
     Guardrail function to check if the input text contains question / query / operation related to Banking.
     If it doesn't, it returns a message indicating that other than banking operations are not allowed.
     """
-    guardrail_agent_response = await Runner.run(guardrail_agent, input,context=context.context)
+    guardrail_agent_response = await Runner.run(guardrail_agent, input, context=context.context)
     print("--------------------")
     print(guardrail_agent_response.final_output)
     print("--------------------")
     return GuardrailFunctionOutput(
-            output_info=guardrail_agent_response.final_output.reason,
-            tripwire_triggered=guardrail_agent_response.final_output.is_banking_question,
-        )
+        output_info=guardrail_agent_response.final_output.reason,
+        tripwire_triggered=not guardrail_agent_response.final_output.is_banking_question,  # Invert the logic
+    )
 
 async def main():
     print("Welcome to agentic-banking!")
@@ -44,7 +44,7 @@ async def main():
     try :
         print("------------------------------------")
         result = await Runner.run(agent, "what is Banking?")
-        result.final_output
+        print(result.final_output)
         print("------------------------------------")
 
     except InputGuardrailTripwireTriggered:
