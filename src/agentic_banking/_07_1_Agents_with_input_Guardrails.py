@@ -12,22 +12,25 @@ class BankingQuestion(BaseModel):
     reason: str 
 
 guardrail_agent = Agent(
-    name="Guardrail Agent",
-    instructions="You are a guardrail agent that checks for whether the query or question is related to Banking or Not.",
+    name="Input Guardrail Agent",
+    instructions="You are a Input guardrail agent that checks for whether the query or input question is related to Banking / finance **if yes return Negative** and  **if no return positive**",
     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     output_type=BankingQuestion,
 )
 
 @input_guardrail
-async def math_guardrails(context: RunContextWrapper[None], agent: Agent,input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
+async def banking_guardrails(context: RunContextWrapper[None], agent: Agent,input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
     """
     Guardrail function to check if the input text contains question / query / operation related to Banking.
     If it doesn't, it returns a message indicating that other than banking operations are not allowed.
     """
     guardrail_agent_response = await Runner.run(guardrail_agent, input,context=context.context)
+    print("--------------------")
+    print(guardrail_agent_response.final_output)
+    print("--------------------")
     return GuardrailFunctionOutput(
-            output_info=guardrail_agent_response.final_output,
-            tripwire_triggered=guardrail_agent_response.final_output.reason,
+            output_info=guardrail_agent_response.final_output.reason,
+            tripwire_triggered=guardrail_agent_response.final_output.is_banking_question,
         )
 
 async def main():
@@ -36,13 +39,18 @@ async def main():
         name="Banking Assistant",
         instructions="You are a helpfull assistant, who help in customer service and banking.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        input_guardrails=[math_guardrails],
+        input_guardrails=[banking_guardrails],
     )
     try :
+        print("------------------------------------")
         result = await Runner.run(agent, "what is Banking?")
-        print(result.final_output)
-    except InputGuardrailTripwireTriggered as e:
-        print(f"Guardrail Tripwire Triggered: {e}")
+        result.final_output
+        print("------------------------------------")
+
+    except InputGuardrailTripwireTriggered:
+
+        print(f"Guardrail Tripwire Triggered")
+
     print("Goodbye from agentic-banking!")
 
 if __name__ == "__main__":
