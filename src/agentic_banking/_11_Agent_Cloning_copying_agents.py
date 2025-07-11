@@ -14,6 +14,7 @@ def main():
         instructions="You are a helpfull weather assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tools=[weather_tool],
+        tool_use_behavior="run_llm_again",
         model_settings=ModelSettings(
             temperature=0.8
         )
@@ -23,14 +24,14 @@ def main():
         name="Robot Assistant",
         instructions="You are a robot assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        # tool_use_behavior="stop_on_first_tool"   
+        tool_use_behavior="stop_on_first_tool"   
     )
-    robot_agent = weather_agent.clone(
-        name="Assistant",
-        instructions="You are a assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        # tool_use_behavior="stop_on_first_tool"   
-    )
+    # robot_agent = weather_agent.clone(
+    #     name="Assistant",
+    #     instructions="You are a assistant",
+    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+    #     tool_use_behavior="stop_on_first_tool"   
+    # )
 
     result = Runner.run_sync(robot_agent, "whats the weather condition in New york city?")
     print(result.final_output)
