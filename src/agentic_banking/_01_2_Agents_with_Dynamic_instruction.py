@@ -25,11 +25,12 @@ def main():
         userAccountType="Saving",
         userBalance=10765490.0
     )
-
+    print(userinfo)
+    dynamicInstruction = f"Your are expert at Banking Operation, this is user data he may ask any question {userinfo}"
     print("Welcome to agentic-banking!")
     agent = Agent[UserInfo](
         name="Banking Assistant",
-        instructions=get_dynamic_instruction,
+        instructions=userinfo,
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
 
     )

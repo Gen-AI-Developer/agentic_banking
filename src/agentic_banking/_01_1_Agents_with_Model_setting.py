@@ -12,6 +12,8 @@ def main():
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         model_settings=ModelSettings(
             tool_choice="auto",
+            top_p=2,
+            top_k=3,
             temperature=0.2,  # Lower temperature for more deterministic responses
             max_tokens=100,  # Increase max tokens for longer responses
             top_p=0.9,  # Use top-p sampling for more diverse outputs

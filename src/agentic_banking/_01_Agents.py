@@ -52,16 +52,16 @@ def main():
         tool_use_behavior="run_llm_again",
         hooks=MyCustomAgentHooks(),
         )
-    print("-------------------")
-    print(agent.tools)
-    print(agent.name)
-    print(agent.instructions)
-    print(agent.model)
-    print(agent.hooks)
-    print(agent.tool_use_behavior)
-    print(agent.handoff_description)
-    print(agent.get_all_tools())
-    print("-------------------")
+    # print("-------------------")
+    # print(agent.tools)
+    # print(agent.name)
+    # print(agent.instructions)
+    # print(agent.model)
+    # print(agent.hooks)
+    # print(agent.tool_use_behavior)
+    # print(agent.handoff_description)
+    # print(agent.get_all_tools())
+    # print("-------------------")
     # print(agent.get_system_prompt())
     # ai_expert_agent : Agent = Agent(
     #     name="ai Assistant",
@@ -82,7 +82,7 @@ def main():
     #     handoffs=[ai_expert_agent, physics_expert_agent],
     # )
 # max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "what is biology?", )
+    result = Runner.run_sync(agent, "what is biology?", max_turns=2)
     print(result.final_output)
 
     pass
