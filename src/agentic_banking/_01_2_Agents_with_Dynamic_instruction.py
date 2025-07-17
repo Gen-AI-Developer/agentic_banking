@@ -1,7 +1,9 @@
+import pprint
 from agents import Agent, Runner, function_tool, set_tracing_disabled, RunContextWrapper
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 from pydantic import BaseModel
+from . import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -30,10 +32,14 @@ def main():
     print("Welcome to agentic-banking!")
     agent = Agent[UserInfo](
         name="Banking Assistant",
-        instructions=userinfo,
+        instructions=get_dynamic_instruction,
+        tool_use_behavior='stop_on_first_tool',
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
 
     )
     result = Runner.run_sync(agent, "what is my bank account Number and balance?",context=userinfo, max_turns=3  )
     print(result.final_output)
+    print("----------------------------------------------")
+    printt.printt(result)
+    pprint.pprint(result)
     print("Goodbye from agentic-banking!")

@@ -1,19 +1,29 @@
 from agents import Agent, Runner, function_tool, set_tracing_disabled, ModelSettings
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-api_key = os.getenv("GEMINI_API_KEY")  
+geminikey= os.getenv("GEMINI_API_KEY")  
+if geminikey:
+    print("OChata Shawa")
 set_tracing_disabled(disabled=True)
-
+MODEL =LitellmModel(model="gemini/gemini-2.0-flash", api_key=geminikey,),
+@function_tool
+def addition(first_int:int,second_int:int):
+    """
+    this is addition tool
+    args: first_int and second_int
+    return: first_int + second_int
+    """
+    return first_int * second_int
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(
-        name="Banking Assistant",
-        instructions="You are a helpfull assistant, who help in customer service and banking. Your Response should be short and concise with in 100 token limit.",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        name="Assistant",
+        instructions="You are a helpfull assistant, You always call tools to get help, and call the tools",
+        # tool_use_behavior='stop_on_first_tool',
+        model=MODEL,
         model_settings=ModelSettings(
-            tool_choice="auto",
-            top_p=2,
-            top_k=3,
+            tool_choice="none",
+            # top_p=1,
             temperature=0.2,  # Lower temperature for more deterministic responses
             max_tokens=100,  # Increase max tokens for longer responses
             top_p=0.9,  # Use top-p sampling for more diverse outputs
@@ -23,7 +33,7 @@ def main():
             
         )
     )
-    result = Runner.run_sync(agent, "what is Banking?")
+    result = Runner.run_sync(agent, "3+3")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
 
