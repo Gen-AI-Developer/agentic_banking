@@ -1,6 +1,9 @@
 from agents import Agent, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+from dataclasses import asdict
+
+from agentic_banking import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -46,11 +49,11 @@ def main():
     print("Welcome to AI Assistant!")
     agent = Agent(
         name="AI Assistant",
-        instructions="You are a helpful assistant",
+        # instructions="You are a helpful assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        tools=[biology_exper],
-        tool_use_behavior="run_llm_again",
-        hooks=MyCustomAgentHooks(),
+        # tools=[biology_exper],
+        # tool_use_behavior="run_llm_again",
+        # hooks=MyCustomAgentHooks(),
         )
     # print("-------------------")
     # print(agent.tools)
@@ -83,7 +86,9 @@ def main():
     # )
 # max_turns=2, run_config=myconfig
     result = Runner.run_sync(agent, "what is biology?", max_turns=2)
-    print(result.final_output)
+    # print(result.final_output)
+    printt.printt(result)
+    # print(asdict(result))
 
     pass
     # print("Welcome to agentic-banking!")
