@@ -1,41 +1,45 @@
 from agents import Agent, Runner, function_tool, set_tracing_disabled, ModelSettings
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-geminikey= os.getenv("GEMINI_API_KEY")  
-if geminikey:
-    print("OChata Shawa")
+
+geminikey = os.getenv("GEMINI_API_KEY")  
+# if geminikey:
+#     print(geminikey)
 set_tracing_disabled(disabled=True)
-MODEL =LitellmModel(model="gemini/gemini-2.0-flash", api_key=geminikey,),
+
+MODEL = LitellmModel(model="gemini/gemini-2.0-flash", api_key=geminikey)  # Removed the trailing comma
+
 @function_tool
-def addition(first_int:int,second_int:int):
+def addition(first_int: int, second_int: int) -> int:
     """
-    this is addition tool
+    This is addition tool
     args: first_int and second_int
     return: first_int + second_int
     """
-    return first_int * second_int
+    return first_int + second_int  # Corrected the return statement
+
 def main():
     print("Welcome to agentic-banking!")
     agent = Agent(
         name="Assistant",
-        instructions="You are a helpfull assistant, You always call tools to get help, and call the tools",
-        # tool_use_behavior='stop_on_first_tool',
+        instructions="You are a helpful assistant, You always call tools to get help, and call the tools",
         model=MODEL,
+        tools=[addition],
+        tool_use_behavior="run_llm_again",
         model_settings=ModelSettings(
-            tool_choice="none",
-            # top_p=1,
+            tool_choice="required",
             temperature=0.2,  # Lower temperature for more deterministic responses
             max_tokens=100,  # Increase max tokens for longer responses
             top_p=0.9,  # Use top-p sampling for more diverse outputs
-            frequency_penalty=0.5,  # Apply frequency penalty to reduce repetition
-            # presence_penalty=0.5,  # Apply presence penalty to encourage new topics Gemini does not support presence_penalty
-            # Note: Gemini does not support presence_penalty, so it is commented out
-            
+            frequency_penalty=0.5,  # Reduce repetition
         )
     )
     result = Runner.run_sync(agent, "3+3")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
+
+if __name__ == "__main__":
+    main()
 
 '''
 - **temperature=0.2**: Controls randomness. Lower value (e.g., 0.2) makes outputs more focused 
