@@ -2,6 +2,7 @@ from agents import Agent, RunContextWrapper, Runner, function_tool, set_tracing_
 from agents.extensions.models.litellm_model import LitellmModel
 from pydantic import BaseModel
 import os
+import asyncio
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
@@ -17,7 +18,7 @@ class CustomeRunHooks(RunHooks):
         print(f"Run ended: {run.id}")
 
 class CustomeAgentHooks(AgentHooks):
-    def on_rstat(self,context: RunContextWrapper[UserInfo], agent):
+    def on_start(self,context: RunContextWrapper[UserInfo], agent):
         print(f"AgentHOoK: Agent started: {agent.name} + {context.context.name}")
 
     def on_end(self, agent):
@@ -31,21 +32,21 @@ def main():
     print("Welcome to agentic-banking!")
     agent = Agent[UserInfo](
         name="Banking Assistant",
-        instructions="You are a helpfull assistant",
+        instructions="You are a helpful assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         hooks=CustomeAgentHooks(),
     )
-    result = Runner.run_sync(agent, "what is Bthe name of the user?", context=userinfor, )
-
-
-
+    result = Runner.run_sync(agent, "what is the name of the user?", context=userinfor)
     print(f"Result of First Agent: {result.final_output}")
 
     agent2 = Agent(
         name="Banking Assistant",
-        instructions="You are a helpfull assistant",
+        instructions="You are a helpful assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     )
     result2 = Runner.run_sync(agent2, "what is the name of the user?", context=userinfor, hooks=CustomeRunHooks())
     print(result2.final_output)
     print("Goodbye from agentic-banking!")
+
+if __name__ == "__main__":
+    main()
