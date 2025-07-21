@@ -1,8 +1,17 @@
-from agents import Agent, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
+from agents import Agent, RunContextWrapper, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-from agents import enable_verbose_stdout_logging
+from agents import enable_verbose_stdout_logging,handoff
 from dataclasses import asdict
+from agents import Agent, handoff
+from agents.extensions import handoff_filters
+
+agent = Agent(name="FAQ agent")
+
+handoff_obj = handoff(
+    agent=agent,
+    input_filter=handoff_filters.remove_all_tools, 
+)
 
 enable_verbose_stdout_logging()
 from agentic_banking import printt
@@ -31,6 +40,26 @@ set_tracing_disabled(disabled=True)
 #     This function is used to print answers related to biology for the user.
 #     """
 #     return " Bio means nothing and logy means not studying. So biology is not studying nothing."
+
+def custom_on_handoff_(context: RunContextWrapper[None], agent: Agent):
+    return f"Custom handoff logic executed for agent: {agent.name} with context: {context.context}"
+
+note_agent = Agent(
+    name="Note Taking Agent",
+    instructions="You are a helpful note-making assistant. You can make notes on various topics.",
+    model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+)
+custom_handoff = handoff(
+    agent=note_agent,
+    tool_name_override="Custom Handoff/Note Tool",
+    on_handoff= custom_on_handoff_,
+    input_filter=handoff_filters.remove_all_tools,
+    tool_description_override="This is a custom handoff tool that allows the agent to make notes on various topics.",
+)
+
+
+
+
 @function_tool
 def historyTools(input: str) -> str:
     """
@@ -43,7 +72,7 @@ def main():
         name="Math Assistant",
         instructions="You are a helpful Math assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        
+
     )
     english_grammer_agent = Agent(
         name="English Grammar Assistant",
@@ -63,12 +92,12 @@ def main():
         model_settings=ModelSettings(
             tool_choice="required",
         ),
-        handoffs=[biology_agent, math_agent, english_grammer_agent],
+        handoffs=[biology_agent, math_agent, english_grammer_agent,custom_on_handoff_],
         tool_use_behavior="stop_on_first_tool",
 
         )
     
-    result = Runner.run_sync(Triage_agent, "what is biology?", max_turns=2)
+    result = Runner.run_sync(Triage_agent, "write notes on Chernobyl Nuclear Desaster?", max_turns=2)
     print(result.final_output)
 
 if __name__ == "__main__":
