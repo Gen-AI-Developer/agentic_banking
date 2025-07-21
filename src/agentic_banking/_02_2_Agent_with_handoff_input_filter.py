@@ -34,6 +34,7 @@ def main():
                 agent = banking_agent,
                 tool_name_override="BankingAssistant",
                 tool_description_override="Provides assistance with banking-related queries.",
+                handoff_input_filter=summary_of_provided_context,
                 # is_enabled=True
                 # input_filter=lambda input: "banking" in input.lower() or "finance" in input.lower()
             ),
