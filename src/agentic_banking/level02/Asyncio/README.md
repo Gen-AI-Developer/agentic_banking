@@ -1,3 +1,4 @@
+### Materail To Check
 1) [Python Async | Asynchronous IO Introduction
 ](https://www.youtube.com/watch?v=7LU1npoPmcg&ab_channel=VeryAcademy)
 2) [AsyncIO and the Event Loop Explained
@@ -10,3 +11,7 @@
 ](https://www.youtube.com/watch?v=WYfzG3AdAzA&ab_channel=Don%27tUseThisCode%E2%80%A2JamesPowell)
 1) [https://www.youtube.com/watch?v=Zag5wqLDorg&ab_channel=Don%27tUseThisCode%E2%80%A2JamesPowell](https://www.youtube.com/watch?v=Zag5wqLDorg&ab_channel=Don%27tUseThisCode%E2%80%A2JamesPowell)
 2) [RealPython-Asyncio](https://realpython.com/async-io-python/)
+
+
+### Key Points 
+1) Runner.run_sync() in OpenAI Agents SDK is a blocking function. It runs the agent workflow synchronously in the main thread, preventing the asyncio event loop from processing other tasks until it completes. This can block the event loop if called within an async context without offloading (e.g., via loop.run_in_executor). For non-blocking execution, use Runner.run() or Runner.run_streamed() with await in an async function.

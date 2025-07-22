@@ -5,14 +5,6 @@ from agents import enable_verbose_stdout_logging,handoff
 from dataclasses import asdict
 from agents import Agent, handoff
 from agents.extensions import handoff_filters
-
-agent = Agent(name="FAQ agent")
-
-handoff_obj = handoff(
-    agent=agent,
-    input_filter=handoff_filters.remove_all_tools, 
-)
-
 enable_verbose_stdout_logging()
 from agentic_banking import printt
 api_key = os.getenv("GEMINI_API_KEY")  
@@ -41,7 +33,7 @@ set_tracing_disabled(disabled=True)
 #     """
 #     return " Bio means nothing and logy means not studying. So biology is not studying nothing."
 
-def custom_on_handoff_(context: RunContextWrapper[None], agent: Agent):
+def custom_on_handoff_(context: RunContextWrapper[None], agent: Agent) ->RunContextWrapper[None]:
     return f"Custom handoff logic executed for agent: {agent.name} with context: {context.context}"
 
 note_agent = Agent(
