@@ -15,3 +15,4 @@
 
 ### Key Points 
 1) Runner.run_sync() in OpenAI Agents SDK is a blocking function. It runs the agent workflow synchronously in the main thread, preventing the asyncio event loop from processing other tasks until it completes. This can block the event loop if called within an async context without offloading (e.g., via loop.run_in_executor). For non-blocking execution, use Runner.run() or Runner.run_streamed() with await in an async function.
+2) 
