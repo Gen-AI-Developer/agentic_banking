@@ -3,6 +3,8 @@ from typing import Any
 from agents import Agent, FunctionTool, RunContextWrapper, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+from agents import enable_verbose_stdout_logging
+enable_verbose_stdout_logging()
 from pydantic import BaseModel, ConfigDict
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
@@ -30,7 +32,7 @@ mytool = FunctionTool(
     params_json_schema=FunctionArguments.model_json_schema(),
     on_invoke_tool=run_function,
     strict_json_schema=True,
-    is_enabled=False,  # Initially disabled
+    # is_enabled=False,  # Initially disabled
 )   
 def main():
     print("Welcome to Assistant!")
@@ -43,3 +45,9 @@ def main():
     result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com")
     print(result.final_output)
     print("Goodbye from Assistant!")
+
+if __name__ == "__main__":
+    main()
+    # Uncomment the line below to run the main function when this script is executed
+    # main()
+    # Note: The main function is not called automatically in this script, you can call it
