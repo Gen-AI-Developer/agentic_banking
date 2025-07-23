@@ -24,7 +24,7 @@ custom_handoff = handoff(
     agent=note_agent,
     tool_name_override="custom_handoff_note_tool",  # Updated to a valid function name
     on_handoff=custom_on_handoff,
-    # input_filter=handoff_filters.remove_all_tools,
+    input_filter=handoff_filters.remove_all_tools,
     tool_description_override="This is a custom handoff tool that allows the agent to make notes on various topics.",
 )
 
