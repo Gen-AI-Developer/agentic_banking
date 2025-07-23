@@ -1,106 +1,71 @@
-from agents import Agent, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
+from agents import Agent, RunContextWrapper, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
 from agents.extensions.models.litellm_model import LitellmModel
 import os
+from agents import enable_verbose_stdout_logging, handoff
 from dataclasses import asdict
-
+from agents import Agent, handoff
+from agents.extensions import handoff_filters
+enable_verbose_stdout_logging()
 from agentic_banking import printt
+
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
-# modelsetting = ModelSettings(
-#     tool_choice="auto",
-# )
-# myconfig = RunConfig(
-#     model_settings=modelsetting,
-# )
+def custom_on_handoff(context: RunContextWrapper[None]) -> str:
+    return f"Custom handoff logic executed for agent:  with context: {context.context}"
 
+note_agent = Agent(
+    name="Note Taking Agent",
+    instructions="You are a helpful note-making assistant. You can make notes on various topics.",
+    model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+)
 
-# input_list = [
-#     {"role": "user",
-#     "content": "What is Asyncio?"},
-#     {"role": "user",
-#     "content": "What is Physics",}
-# ]
-
-class MyCustomAgentHooks(AgentHooks):
-    async def on_start(self, context, agent) -> None:
-        print(f"AH:-> Agent: {agent.name} is started.")
-
-    async def on_end(self, context, agent, output) -> None:
-        print(f"AH:-> Agent {agent.name} has completed")
-    
-    async def on_tool_start(self, context, agent, tool):
-        if (tool.name == "biology_exper"):
-            print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
-        return await super().on_tool_start(context, agent, tool)
-    
-    async def on_tool_end(self, context, agent, tool, result):
-        print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
-        return await super().on_tool_end(context, agent, tool, result)
+custom_handoff = handoff(
+    agent=note_agent,
+    tool_name_override="custom_handoff_note_tool",  # Updated to a valid function name
+    on_handoff=custom_on_handoff,
+    # input_filter=handoff_filters.remove_all_tools,
+    tool_description_override="This is a custom handoff tool that allows the agent to make notes on various topics.",
+)
 
 @function_tool
-def biology_exper(input: str) -> str:
+def historytools(input: str) -> str:
     """
-    This function is used to print answers related to biology for the user.
+    This function is used to print answers related to history for the user.
     """
-    return " Bio means nothing and logy means not studying. So biology is not studying nothing."
+    return "History is the study of past events, particularly in human affairs."
 
 def main():
     print("Welcome to AI Assistant!")
-    agent = Agent(
+    math_agent = Agent(
+        name="Math Assistant",
+        instructions="You are a helpful Math assistant",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+    )
+    english_grammer_agent = Agent(
+        name="English Grammar Assistant",
+        instructions="You are a helpful English Grammar assistant",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+    )
+    biology_agent = Agent(
+        name="Biology Assistant",
+        instructions="You are a helpful Biology assistant",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+    )
+    Triage_agent = Agent(
         name="AI Assistant",
-        # instructions="You are a helpful assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        # tools=[biology_exper],
-        # tool_use_behavior="run_llm_again",
-        # hooks=MyCustomAgentHooks(),
-        )
-    # print("-------------------")
-    # print(agent.tools)
-    # print(agent.name)
-    # print(agent.instructions)
-    # print(agent.model)
-    # print(agent.hooks)
-    # print(agent.tool_use_behavior)
-    # print(agent.handoff_description)
-    # print(agent.get_all_tools())
-    # print("-------------------")
-    # print(agent.get_system_prompt())
-    # ai_expert_agent : Agent = Agent(
-    #     name="ai Assistant",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoff_description="AI Expert Agent",
-    # )
-    # physics_expert_agent : Agent = Agent(
-    #     name="physic Assistant",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoff_description="Physics Expert Agent",
-    # )
-    # triage_agent : Agent = Agent(
-    #     name="Triage Agent",
-    #     tools=[biology_exper],
-    #     tool_use_behavior="run_llm_again",
-    #     instructions="You are a triage agent that decides which expert agent to hand off the question to also print the name of agent.",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoffs=[ai_expert_agent, physics_expert_agent],
-    # )
-# max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "what is biology?", max_turns=2)
-    # print(result.final_output)
-    printt.printt(result)
-    # print(asdict(result))
+        instructions="You are a helpful assistant",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+        tools=[historytools],
+        model_settings=ModelSettings(
+            tool_choice="required",
+        ),
+        handoffs=[biology_agent, math_agent, english_grammer_agent, custom_handoff],
+        tool_use_behavior="stop_on_first_tool",
+    )
+    
+    result = Runner.run_sync(Triage_agent, "write notes on Chernobyl Nuclear Disaster?", max_turns=2)
+    print(result.final_output)
 
-    pass
-    # print("Welcome to agentic-banking!")
-    # """
-    # This is a simple example of how to use the Agentic Banking framework.
-    # It creates an agent that can answer questions about banking.
-    # """
-    # agent = Agent(
-    #     name="Banking Assistant",
-    #     instructions="You are a helpfull assistant, who help in customer service and banking.",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    # )
-    # result = Runner.run_sync(agent, "Banking?", max_turns=1,run_config=myconfig)
-    # print(result.final_output)
-    # print("Goodbye from agentic-banking!")
+if __name__ == "__main__":
+    main()

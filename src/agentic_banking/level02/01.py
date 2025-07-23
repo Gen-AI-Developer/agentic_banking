@@ -12,7 +12,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 set_tracing_disabled(disabled=True)
 
 def custom_on_handoff(context: RunContextWrapper[None]) -> str:
-    return f"Custom handoff logic executed for agent: {context.agent.name} with context: {context.context}"
+    return f"Custom handoff logic executed for agent:  with context: {context.context}"
 
 note_agent = Agent(
     name="Note Taking Agent",
@@ -24,7 +24,7 @@ custom_handoff = handoff(
     agent=note_agent,
     tool_name_override="custom_handoff_note_tool",  # Updated to a valid function name
     on_handoff=custom_on_handoff,
-    input_filter=handoff_filters.remove_all_tools,
+    # input_filter=handoff_filters.remove_all_tools,
     tool_description_override="This is a custom handoff tool that allows the agent to make notes on various topics.",
 )
 
