@@ -1,71 +1,45 @@
-from agents import Agent, RunContextWrapper, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
+import time
+from typing import Any
+from agents import Agent, FunctionTool, RunContextWrapper, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-from agents import enable_verbose_stdout_logging, handoff
-from dataclasses import asdict
-from agents import Agent, handoff
-from agents.extensions import handoff_filters
-enable_verbose_stdout_logging()
-from agentic_banking import printt
-
+from pydantic import BaseModel, ConfigDict
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
-def custom_on_handoff(context: RunContextWrapper[None]) -> str:
-    return f"Custom handoff logic executed for agent:  with context: {context.context}"
+class FunctionArguments(BaseModel):
+    name: str
+    age: int
+    email: str
+    model_config = ConfigDict(extra="forbid")
 
-note_agent = Agent(
-    name="Note Taking Agent",
-    instructions="You are a helpful note-making assistant. You can make notes on various topics.",
-    model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
-)
+def do_some_work(data: str) -> str:
+    print(f"do_some_work function with data: {data}")
+    print("Processing data...")
+    time.sleep(2)  # Simulating some processing time
+    return f"Processed data: {data}"
 
-custom_handoff = handoff(
-    agent=note_agent,
-    tool_name_override="custom_handoff_note_tool",  # Updated to a valid function name
-    on_handoff=custom_on_handoff,
-    # input_filter=handoff_filters.remove_all_tools,
-    tool_description_override="This is a custom handoff tool that allows the agent to make notes on various topics.",
-)
+async def run_function(context: RunContextWrapper[Any],args:str)-> str:
+    print(f"Run_function with context: {context}, and args: {args}")
+    parsed = FunctionArguments.model_validate_json(args)
+    return do_some_work(f"Username: {parsed.name}, Age: {parsed.age}, Email: {parsed.email}")
 
-@function_tool
-def historytools(input: str) -> str:
-    """
-    This function is used to print answers related to history for the user.
-    """
-    return "History is the study of past events, particularly in human affairs."
-
+mytool = FunctionTool(
+    name="user_info_tool",
+    description="Process user information from the input string.",
+    params_json_schema=FunctionArguments.model_json_schema(),
+    on_invoke_tool=run_function,
+    strict_json_schema=True,
+    is_enabled=False,  # Initially disabled
+)   
 def main():
-    print("Welcome to AI Assistant!")
-    math_agent = Agent(
-        name="Math Assistant",
-        instructions="You are a helpful Math assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
+    print("Welcome to Assistant!")
+    agent = Agent(
+        name="Assistant",
+        instructions="You are a helpfull assistant",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        tools=[mytool],
     )
-    english_grammer_agent = Agent(
-        name="English Grammar Assistant",
-        instructions="You are a helpful English Grammar assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
-    )
-    biology_agent = Agent(
-        name="Biology Assistant",
-        instructions="You are a helpful Biology assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
-    )
-    Triage_agent = Agent(
-        name="AI Assistant",
-        instructions="You are a helpful assistant",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key),
-        tools=[historytools],
-        model_settings=ModelSettings(
-            tool_choice="required",
-        ),
-        handoffs=[biology_agent, math_agent, english_grammer_agent, custom_handoff],
-        tool_use_behavior="stop_on_first_tool",
-    )
-    
-    result = Runner.run_sync(Triage_agent, "write notes on Chernobyl Nuclear Disaster?", max_turns=2)
+    result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com")
     print(result.final_output)
-
-if __name__ == "__main__":
-    main()
+    print("Goodbye from Assistant!")
