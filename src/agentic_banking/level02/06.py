@@ -1,106 +1,62 @@
-from agents import Agent, Runner, function_tool, set_tracing_disabled, RunConfig, ModelSettings, AgentHooks
+import time
+from typing import Any
+from agents import Agent, FunctionTool, ModelSettings, RunContextWrapper, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
-from dataclasses import asdict
-
-from agentic_banking import printt
+from agents import enable_verbose_stdout_logging
+enable_verbose_stdout_logging()
+from pydantic import BaseModel, ConfigDict
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
-# modelsetting = ModelSettings(
-#     tool_choice="auto",
-# )
-# myconfig = RunConfig(
-#     model_settings=modelsetting,
-# )
+class FunctionArguments(BaseModel):
+    name: str
+    age: int
+    email: str
+    model_config = ConfigDict(extra="forbid")
 
+def do_some_work(data: str) -> str:
+    print(f"do_some_work function with data: {data}")
+    print("Processing data...")
+    time.sleep(2)  # Simulating some processing time
+    return f"Processed data: {data}"
 
-# input_list = [
-#     {"role": "user",
-#     "content": "What is Asyncio?"},
-#     {"role": "user",
-#     "content": "What is Physics",}
-# ]
+async def run_function(context: RunContextWrapper[Any],args:str)-> str:
+    print(f"Run_function with context: {context}, and args: {args}")
+    parsed = FunctionArguments.model_validate_json(args)
+    return do_some_work(f"Username: {parsed.name}, Age: {parsed.age}, Email: {parsed.email}")
 
-class MyCustomAgentHooks(AgentHooks):
-    async def on_start(self, context, agent) -> None:
-        print(f"AH:-> Agent: {agent.name} is started.")
-
-    async def on_end(self, context, agent, output) -> None:
-        print(f"AH:-> Agent {agent.name} has completed")
-    
-    async def on_tool_start(self, context, agent, tool):
-        if (tool.name == "biology_exper"):
-            print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
-        return await super().on_tool_start(context, agent, tool)
-    
-    async def on_tool_end(self, context, agent, tool, result):
-        print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
-        return await super().on_tool_end(context, agent, tool, result)
-
-@function_tool
-def biology_exper(input: str) -> str:
-    """
-    This function is used to print answers related to biology for the user.
-    """
-    return " Bio means nothing and logy means not studying. So biology is not studying nothing."
-
+mytool = FunctionTool(
+    name="user_info_tool",
+    description="Process user information from the input string.",
+    params_json_schema=FunctionArguments.model_json_schema(),
+    on_invoke_tool=run_function,
+    strict_json_schema=True,
+    is_enabled=False,  # Initially disabled
+)   
+mytool.is_enabled = True  # Enable the tool
 def main():
-    print("Welcome to AI Assistant!")
+    print("Welcome to Assistant!")
     agent = Agent(
-        name="AI Assistant",
-        # instructions="You are a helpful assistant",
+        name="Assistant",
+        instructions="You are a helpfull assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        # tools=[biology_exper],
-        # tool_use_behavior="run_llm_again",
-        # hooks=MyCustomAgentHooks(),
-        )
-    # print("-------------------")
-    # print(agent.tools)
-    # print(agent.name)
-    # print(agent.instructions)
-    # print(agent.model)
-    # print(agent.hooks)
-    # print(agent.tool_use_behavior)
-    # print(agent.handoff_description)
-    # print(agent.get_all_tools())
-    # print("-------------------")
-    # print(agent.get_system_prompt())
-    # ai_expert_agent : Agent = Agent(
-    #     name="ai Assistant",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoff_description="AI Expert Agent",
-    # )
-    # physics_expert_agent : Agent = Agent(
-    #     name="physic Assistant",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoff_description="Physics Expert Agent",
-    # )
-    # triage_agent : Agent = Agent(
-    #     name="Triage Agent",
-    #     tools=[biology_exper],
-    #     tool_use_behavior="run_llm_again",
-    #     instructions="You are a triage agent that decides which expert agent to hand off the question to also print the name of agent.",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    #     handoffs=[ai_expert_agent, physics_expert_agent],
-    # )
-# max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "what is biology?", max_turns=2)
-    # print(result.final_output)
-    printt.printt(result)
-    # print(asdict(result))
+        # tool_use_behavior="stop_on_first_tool",
+        # model_settings=ModelSettings(
+        #     max_tokens=200,
+        #     temperature=0.2,
+        #     top_p=0.95,
+        #     top_k=40,
+        #     tool_choice="none",
+        # ),
+        tools=[mytool],
+    )
+    result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com")
+    print(result.final_output)
+    print("Goodbye from Assistant!")
 
-    pass
-    # print("Welcome to agentic-banking!")
-    # """
-    # This is a simple example of how to use the Agentic Banking framework.
-    # It creates an agent that can answer questions about banking.
-    # """
-    # agent = Agent(
-    #     name="Banking Assistant",
-    #     instructions="You are a helpfull assistant, who help in customer service and banking.",
-    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-    # )
-    # result = Runner.run_sync(agent, "Banking?", max_turns=1,run_config=myconfig)
-    # print(result.final_output)
-    # print("Goodbye from agentic-banking!")
+if __name__ == "__main__":
+    main()
+    # Uncomment the line below to run the main function when this script is executed
+    # main()
+    # Note: The main function is not called automatically in this script, you can call it

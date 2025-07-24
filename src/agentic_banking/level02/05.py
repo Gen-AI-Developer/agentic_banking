@@ -3,7 +3,7 @@ from agents.extensions.models.litellm_model import LitellmModel
 import os
 from dataclasses import asdict
 
-enable_verbose_stdout_logging()
+# enable_verbose_stdout_logging()
 from agentic_banking import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
@@ -23,21 +23,22 @@ set_tracing_disabled(disabled=True)
 #     "content": "What is Physics",}
 # ]
 
-# class MyCustomAgentHooks(AgentHooks):
-#     async def on_start(self, context, agent) -> None:
-#         print(f"AH:-> Agent: {agent.name} is started.")
+class MyCustomAgentHooks(AgentHooks):
+    async def on_start(self, context, agent) -> None:
+        print(f"AH:-> Agent: {agent.name} is started.")
 
-#     async def on_end(self, context, agent, output) -> None:
-#         print(f"AH:-> Agent {agent.name} has completed")
+    async def on_end(self, context, agent, output) -> None:
+        print(f"AH:-> Agent {agent.name} has completed")
     
-#     async def on_tool_start(self, context, agent, tool):
-#         if (tool.name == "biology_exper"):
-#             print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
-#         return await super().on_tool_start(context, agent, tool)
+    async def on_tool_start(self, context, agent, tool):
+        print(f"AH:-> {agent.name} called a Tool {tool.name} with context {context.context}")
+        if (tool.name == "biology_exper"):
+            print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
+        return await super().on_tool_start(context, agent, tool)
     
-#     async def on_tool_end(self, context, agent, tool, result):
-#         print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
-#         return await super().on_tool_end(context, agent, tool, result)
+    async def on_tool_end(self, context, agent, tool, result):
+        print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
+        return await super().on_tool_end(context, agent, tool, result)
 
 @function_tool
 def biology_exper_tool(input: str) -> str:
@@ -45,21 +46,42 @@ def biology_exper_tool(input: str) -> str:
     This function is used to print answers related to biology for the user.
     """
     return " Bio means nothing and logy means not studying. So biology is not studying nothing."
-
+@function_tool
+def make_homework_easier(input: str) -> str:
+    """
+    This function is used to make homework easier for the user.
+    """
+    return "Homework is a task assigned to students by their teachers to be completed outside of class. It can include reading, writing, problem-solving, or other activities that reinforce learning."
 def main():
     
     print("Welcome to AI Assistant!")
-    special_task_agent_astool = Agent(
-        name="Special Task Agent",
-        instructions="You are a special task agent that can handle specific tasks.",
-        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
-        handoff_description="This agent is designed to handle special tasks.",
-        )
+    # special_task_agent_astool = Agent(
+    #     name="Special Task Agent",
+    #     instructions="You are a special task agent that can handle specific tasks.",
+    #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+    #     handoff_description="This agent is designed to handle special tasks.",
+    #     hooks=MyCustomAgentHooks(),
+    #     model_settings=ModelSettings(
+    #         tool_choice="auto",
+    #         max_tokens=1000,
+    #         temperature=0.5,
+    #         top_p=0.9,
+    #     ),
+    #     )
     homework_agent = Agent(
         name="Homework Assistant",
         instructions="You are a helpful assistant for homework questions.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         handoff_description="This agent is designed to assist with homework tasks.",
+        tool_use_behavior="run_llm_again",
+        hooks=MyCustomAgentHooks(),
+        tools=[make_homework_easier],
+        model_settings=ModelSettings(
+            tool_choice="required",
+            max_tokens=1000,
+            temperature=0.5,
+            top_p=0.9,
+        ),
         )
     agent = Agent(
         name="AI Assistant",
@@ -67,14 +89,28 @@ def main():
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tool_use_behavior="run_llm_again",
         handoffs=[homework_agent],
-        tools=[biology_exper_tool, special_task_agent_astool.as_tool(
-            tool_name="special_task_agent_tool_astool", 
-            tool_description="This tool handles special tasks."
-        )],
+        hooks=MyCustomAgentHooks(),
+        model_settings=ModelSettings(
+            tool_choice="auto",
+            max_tokens=1000,
+            temperature=0.5,
+            top_p=0.9,
+        ),
+        tools=[biology_exper_tool],
+        # special_task_agent_astool.as_tool(
+        #     tool_name="special_task_agent_tool_astool", 
+        #     tool_description="This tool handles special tasks."
+        # )
         # tools=[biology_exper],
         # tool_use_behavior="run_llm_again",
         # hooks=MyCustomAgentHooks(),
         )
+    robot_agent = agent.clone(
+        name = "Triage Agent",
+        instructions = "you are a triage agent that decides which expert agent to hand off the question to also print the name of agent.",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        
+    )
     # print("-------------------")
     # print(agent.tools)
     # print(agent.name)
@@ -105,7 +141,7 @@ def main():
     #     handoffs=[ai_expert_agent, physics_expert_agent],
     # )
 # max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "HomeWork Task 1: write a short defination of physics?, Special Task: writw a short defination of Biology?", max_turns=2)
+    result = Runner.run_sync(agent, "HomeWork Task 1: write a short defination of physics?", max_turns=2)
     # print(result.final_output)
     # printt.printt(result)
     # print(asdict(result))
@@ -121,6 +157,8 @@ def main():
     # )
     # result = Runner.run_sync(agent, "Banking?", max_turns=1,run_config=myconfig)
     print(result.final_output)
+    print(result.last_agent.name)
+    # print(result.to_input_list())
     # print("Goodbye from agentic-banking!")
 
 if __name__ == "__main__":
