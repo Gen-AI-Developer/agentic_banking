@@ -1,6 +1,6 @@
 import time
 from typing import Any
-from agents import Agent, FunctionTool, RunContextWrapper, Runner, set_tracing_disabled
+from agents import Agent, FunctionTool, ModelSettings, RunContextWrapper, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 from agents import enable_verbose_stdout_logging
@@ -40,6 +40,14 @@ def main():
         name="Assistant",
         instructions="You are a helpfull assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        # tool_use_behavior="stop_on_first_tool",
+        # model_settings=ModelSettings(
+        #     max_tokens=200,
+        #     temperature=0.2,
+        #     top_p=0.95,
+        #     top_k=40,
+        #     tool_choice="none",
+        # ),
         tools=[mytool],
     )
     result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com")
