@@ -40,7 +40,7 @@ set_tracing_disabled(disabled=True)
 #         return await super().on_tool_end(context, agent, tool, result)
 
 @function_tool
-def biology_exper(input: str) -> str:
+def biology_exper_tool(input: str) -> str:
     """
     This function is used to print answers related to biology for the user.
     """
@@ -49,6 +49,12 @@ def biology_exper(input: str) -> str:
 def main():
     
     print("Welcome to AI Assistant!")
+    special_task_agent_astool = Agent(
+        name="Special Task Agent",
+        instructions="You are a special task agent that can handle specific tasks.",
+        model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        handoff_description="This agent is designed to handle special tasks.",
+        )
     homework_agent = Agent(
         name="Homework Assistant",
         instructions="You are a helpful assistant for homework questions.",
@@ -61,7 +67,10 @@ def main():
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tool_use_behavior="run_llm_again",
         handoffs=[homework_agent],
-        tools=[biology_exper],
+        tools=[biology_exper_tool, special_task_agent_astool.as_tool(
+            tool_name="special_task_agent_tool_astool", 
+            tool_description="This tool handles special tasks."
+        )],
         # tools=[biology_exper],
         # tool_use_behavior="run_llm_again",
         # hooks=MyCustomAgentHooks(),
@@ -96,9 +105,9 @@ def main():
     #     handoffs=[ai_expert_agent, physics_expert_agent],
     # )
 # max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "HomeWork Task 1: write a short defination of physics?, Homework Task 2: writw a short defination of Biology?", max_turns=2)
+    result = Runner.run_sync(agent, "HomeWork Task 1: write a short defination of physics?, Special Task: writw a short defination of Biology?", max_turns=2)
     # print(result.final_output)
-    printt.printt(result)
+    # printt.printt(result)
     # print(asdict(result))
     # print("Welcome to agentic-banking!")
     # """
@@ -111,7 +120,7 @@ def main():
     #     model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     # )
     # result = Runner.run_sync(agent, "Banking?", max_turns=1,run_config=myconfig)
-    # print(result.final_output)
+    print(result.final_output)
     # print("Goodbye from agentic-banking!")
 
 if __name__ == "__main__":
