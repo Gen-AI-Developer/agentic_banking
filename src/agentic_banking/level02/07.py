@@ -7,12 +7,15 @@ from agentic_banking import printt
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
-# modelsetting = ModelSettings(
-#     tool_choice="auto",
-# )
-# myconfig = RunConfig(
-#     model_settings=modelsetting,
-# )
+modelsetting = ModelSettings(
+    tool_choice="auto",
+    top_p=0,
+    temperature=0,
+
+)
+myconfig = RunConfig(
+    model_settings=modelsetting,
+)
 
 
 # input_list = [
@@ -22,35 +25,37 @@ set_tracing_disabled(disabled=True)
 #     "content": "What is Physics",}
 # ]
 
-class MyCustomAgentHooks(AgentHooks):
-    async def on_start(self, context, agent) -> None:
-        print(f"AH:-> Agent: {agent.name} is started.")
+# class MyCustomAgentHooks(AgentHooks):
+#     async def on_start(self, context, agent) -> None:
+#         print(f"AH:-> Agent: {agent.name} is started.")
 
-    async def on_end(self, context, agent, output) -> None:
-        print(f"AH:-> Agent {agent.name} has completed")
+#     async def on_end(self, context, agent, output) -> None:
+#         print(f"AH:-> Agent {agent.name} has completed")
     
-    async def on_tool_start(self, context, agent, tool):
-        if (tool.name == "biology_exper"):
-            print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
-        return await super().on_tool_start(context, agent, tool)
+#     async def on_tool_start(self, context, agent, tool):
+#         if (tool.name == "biology_exper"):
+#             print(f"AH:-> {agent.name} called a tool with context {context.context} Tool {tool.name} is starting with input: {context.context}")
+#         return await super().on_tool_start(context, agent, tool)
     
-    async def on_tool_end(self, context, agent, tool, result):
-        print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
-        return await super().on_tool_end(context, agent, tool, result)
+#     async def on_tool_end(self, context, agent, tool, result):
+#         print(f"AH:-> {agent.name} called a Tool {tool.name} has completed with result: {result}")
+#         return await super().on_tool_end(context, agent, tool, result)
 
-@function_tool
-def biology_exper(input: str) -> str:
-    """
-    This function is used to print answers related to biology for the user.
-    """
-    return " Bio means nothing and logy means not studying. So biology is not studying nothing."
+# @function_tool
+# def biology_exper(input: str) -> str:
+#     """
+#     This function is used to print answers related to biology for the user.
+#     """
+#     return " Bio means nothing and logy means not studying. So biology is not studying nothing."
 
 def main():
     print("Welcome to AI Assistant!")
     agent = Agent(
-        name="AI Assistant",
+        name="Expert Story Writer",
+        instructions="You are a helpful assistant that writes stories based on given titles and movie references.",
         # instructions="You are a helpful assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        model_settings=modelsetting,
         # tools=[biology_exper],
         # tool_use_behavior="run_llm_again",
         # hooks=MyCustomAgentHooks(),
@@ -85,13 +90,13 @@ def main():
     #     handoffs=[ai_expert_agent, physics_expert_agent],
     # )
 # max_turns=2, run_config=myconfig
-    result = Runner.run_sync(agent, "what is biology?", max_turns=2)
-    # print(result.final_output)
-    printt.printt(result)
+    result = Runner.run_sync(agent, "write a story on the title of -Only the Brave- base on the movie -only the brave-", max_turns=2)
+    print(result.final_output)
+    # printt.printt(result)
     # print(asdict(result))
 
-    pass
-    # print("Welcome to agentic-banking!")
+    # pass
+    # # print("Welcome to agentic-banking!")
     # """
     # This is a simple example of how to use the Agentic Banking framework.
     # It creates an agent that can answer questions about banking.
@@ -104,3 +109,6 @@ def main():
     # result = Runner.run_sync(agent, "Banking?", max_turns=1,run_config=myconfig)
     # print(result.final_output)
     # print("Goodbye from agentic-banking!")
+
+if __name__ == "__main__":
+    main()

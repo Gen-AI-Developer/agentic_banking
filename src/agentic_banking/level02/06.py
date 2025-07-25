@@ -9,6 +9,13 @@ from pydantic import BaseModel, ConfigDict
 api_key = os.getenv("GEMINI_API_KEY")  
 set_tracing_disabled(disabled=True)
 
+modelsettings = ModelSettings(
+    max_tokens=200,
+    temperature=0.2,
+    top_p=0.95,
+    # top_k=40,
+    tool_choice="none",
+)
 class FunctionArguments(BaseModel):
     name: str
     age: int
@@ -51,7 +58,7 @@ def main():
         # ),
         tools=[mytool],
     )
-    result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com")
+    result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com",max_turns=2)
     print(result.final_output)
     print("Goodbye from Assistant!")
 
