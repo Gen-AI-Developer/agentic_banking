@@ -4,6 +4,7 @@ from agents import Agent, FunctionTool, ModelSettings, RunContextWrapper, Runner
 from agents.extensions.models.litellm_model import LitellmModel
 import os
 from agents import enable_verbose_stdout_logging
+from agents.agent import StopAtTools
 enable_verbose_stdout_logging()
 from pydantic import BaseModel, ConfigDict
 api_key = os.getenv("GEMINI_API_KEY")  
@@ -14,7 +15,8 @@ modelsettings = ModelSettings(
     temperature=0.2,
     top_p=0.95,
     # top_k=40,
-    tool_choice="none",
+    tool_choice="none",  # No tool choice, we will use the function tool directly   
+
 )
 class FunctionArguments(BaseModel):
     name: str
@@ -26,7 +28,7 @@ def do_some_work(data: str) -> str:
     print(f"do_some_work function with data: {data}")
     print("Processing data...")
     time.sleep(2)  # Simulating some processing time
-    return f"Processed data: {data}"
+    return f"Tool Processed data: {data}"
 
 async def run_function(context: RunContextWrapper[Any],args:str)-> str:
     print(f"Run_function with context: {context}, and args: {args}")
@@ -48,6 +50,7 @@ def main():
         name="Assistant",
         instructions="You are a helpfull assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
+        tool_use_behavior=StopAtTools(stop_at_tool_names=['user_info_tool']),
         # tool_use_behavior="stop_on_first_tool",
         # model_settings=ModelSettings(
         #     max_tokens=200,
@@ -56,7 +59,7 @@ def main():
         #     top_k=40,
         #     tool_choice="none",
         # ),
-        tools=[mytool],
+        tools=[mytool],  # Add the tool to the agent
     )
     result = Runner.run_sync(agent, "process this user info: name John Doe, age 30, email programmersafdar@live.com",max_turns=2)
     print(result.final_output)
