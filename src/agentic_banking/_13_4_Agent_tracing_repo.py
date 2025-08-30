@@ -41,18 +41,18 @@ class LocalTraceProcessor(TracingProcessor):
         for span in self.spans:
             print(span.export())
 
-BASE_URL = os.getenv("BASE_URL") or "https://generativelanguage.googleapis.com/v1beta/openai/"
-API_KEY = os.getenv("GEMINI_API_KEY") #or userdata.get("GEMINI_API_KEY")
-MODEL_NAME = os.getenv("MODEL_NAME") or "gemini-2.0-flash"
+BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") #or userdata.get("GEMINI_API_KEY")
+MODEL_NAME = "gemini/gemini-2.0-flash"
 
 
-if not BASE_URL or not API_KEY or not MODEL_NAME:
+if not BASE_URL or not GEMINI_API_KEY or not MODEL_NAME:
     raise ValueError("Please set BASE_URL, GEMINI_API_KEY, MODEL_NAME via env var or code.")
 
 # Create OpenAI client
 client = AsyncOpenAI(
     base_url=BASE_URL,
-    api_key=API_KEY,
+    api_key=GEMINI_API_KEY,
 )
 
 # Configure the client
@@ -74,5 +74,6 @@ async def main():
         print(f"Rating: {second_result.final_output}")
 
 # Run the main function
-import asyncio
-asyncio.run(main())
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

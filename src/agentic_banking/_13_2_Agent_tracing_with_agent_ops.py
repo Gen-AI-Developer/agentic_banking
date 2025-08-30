@@ -8,7 +8,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 set_tracing_disabled(disabled=True)
 agents_ops_api_key = os.getenv("AGENT_OPS_API_KEY")
 
-agentops.init(api_key=agents_ops_api_key)
+agentops.init(api_key=agents_ops_api_key,trace_name="agentic-banking")
 # agentops.monitor()
 async def main():
     print("Welcome to AI")
@@ -17,12 +17,12 @@ async def main():
         instructions="You are a helpfull assistant",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
     )
-    result = Runner.run_streamed(agent, "what is today date?")
-    async for event in result.stream_events:
-        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
-            print(event.raw_response, end="", flush=True)
-        pass
-
+    result = await Runner.run(agent, "what is today date?")
+    # async for event in result.stream_events:
+    #     if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+    #         print(event.raw_response, end="", flush=True)
+    #     pass
+    print(result.final_output)
     print("Goodbye from ai!")
 
 if __name__ == "__main__":

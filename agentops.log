@@ -1,9 +1,11 @@
-2025-06-23 11:09:00,512 - INFO - [ConcurrentFuturesInstrumentor] Successfully instrumented concurrent.futures.ThreadPoolExecutor
-2025-06-23 11:09:00,512 - INFO - AgentOps: Successfully instrumented 'ConcurrentFuturesInstrumentor' for package 'python'.
-2025-06-23 11:09:00,565 - INFO - AgentOps: Successfully instrumented 'OpenaiInstrumentor' for package 'agentops.instrumentation.providers.openai'.
-2025-06-23 11:09:00,567 - INFO - AgentOps: 'agents' is the first-targeted agentic library. Will uninstrument providers if any are/become active.
-2025-06-23 11:09:00,568 - INFO - AgentOps: Uninstrumented provider: OpenaiInstrumentor (for package 'openai') due to agentic library activation.
-2025-06-23 11:09:00,594 - INFO - AgentOps: Successfully instrumented 'OpenaiInstrumentor' for package 'agentops.instrumentation.providers.openai'.
-2025-06-23 11:09:00,602 - INFO - AgentOps: Successfully instrumented 'OpenAIAgentsInstrumentor' for package 'agentops.instrumentation.agentic.openai_agents'.
-2025-06-23 11:09:00,603 - INFO - Session Replay for default trace: https://app.agentops.ai/sessions?trace_id=598b92d61d7b67761e2a8fa4ca36bc2c
-2025-06-23 11:09:02,684 - INFO - Session Replay for default.session trace: https://app.agentops.ai/sessions?trace_id=598b92d61d7b67761e2a8fa4ca36bc2c
+2025-08-30 23:04:59,028 - INFO - [ConcurrentFuturesInstrumentor] Successfully instrumented concurrent.futures.ThreadPoolExecutor
+2025-08-30 23:04:59,029 - INFO - AgentOps: Successfully instrumented 'ConcurrentFuturesInstrumentor' for package 'python'.
+2025-08-30 23:04:59,338 - WARNING - [OPENAI INSTRUMENTOR] Error setting up OpenAI streaming wrappers: No module named 'openai.resources.beta.chat'
+2025-08-30 23:04:59,338 - INFO - AgentOps: Successfully instrumented 'OpenaiInstrumentor' for package 'agentops.instrumentation.providers.openai'.
+2025-08-30 23:04:59,340 - INFO - AgentOps: 'agents' is the first-targeted agentic library. Will uninstrument providers if any are/become active.
+2025-08-30 23:04:59,341 - INFO - AgentOps: Uninstrumented provider: OpenaiInstrumentor (for package 'openai') due to agentic library activation.
+2025-08-30 23:04:59,351 - WARNING - [OPENAI INSTRUMENTOR] Error setting up OpenAI streaming wrappers: No module named 'openai.resources.beta.chat'
+2025-08-30 23:04:59,352 - INFO - AgentOps: Successfully instrumented 'OpenaiInstrumentor' for package 'agentops.instrumentation.providers.openai'.
+2025-08-30 23:04:59,357 - INFO - AgentOps: Successfully instrumented 'OpenAIAgentsInstrumentor' for package 'agentops.instrumentation.agentic.openai_agents'.
+2025-08-30 23:04:59,357 - INFO - Session Replay for agentic-banking trace: https://app.agentops.ai/sessions?trace_id=5ecffa31739ff45d9edc0489701aaf96
+2025-08-30 23:05:00,075 - INFO - Session Replay for agentic-banking.session trace: https://app.agentops.ai/sessions?trace_id=5ecffa31739ff45d9edc0489701aaf96

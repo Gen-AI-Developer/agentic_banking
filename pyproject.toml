@@ -48,7 +48,7 @@ outputg = "agentic_banking:_07_2_Agents_with_ouput_Guardrails.main"
 streaming = "agentic_banking:_04_3_Agents_with_Runner_streaming.main"
 cr = "agentic_banking:_15_Agent_with_Custom_Runner.main"
 agentllmcontext = "agentic_banking:_05_2_Agents_with_local_context_llm_level_context.main"
-
+agentops = "agentic_banking:_13_2_Agent_tracing_with_agent_ops.main"
 
 
 
