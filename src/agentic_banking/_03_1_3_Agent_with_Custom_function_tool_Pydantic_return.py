@@ -8,7 +8,7 @@ set_tracing_disabled(disabled=True)
 # class AdditionResult(BaseModel):
 #     result: int
 
-@function_tool
+@function_tool(is_enabled=True, description="Adds two integers together",)
 def addition(a: int, b: int):
     """
     Adds two integers together.
@@ -23,13 +23,7 @@ def main():
         instructions="You are Assistant, You will use Tool to Answer the question.",
         model=LitellmModel(model="gemini/gemini-2.0-flash", api_key=api_key,),
         tools=[addition],
-        # output_type= int,
-        # tool_use_behavior="stop_on_first_tool",
-        model_settings=ModelSettings(
-            tool_choice="none"
         )
-        # tool_use_behavior='stop_on_first_tool'
-    )
     result = Runner.run_sync(agent, "what is 34 plus 52?")
     print(result.final_output)
     print("Goodbye from agentic-banking!")
